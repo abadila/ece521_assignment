@@ -10,3 +10,4 @@ eta = 0.01
 plt.plot(train_x, train_y)
 w = gradient_descent(train_x, train_y, eta)
 plt.plot(train_x, train_x * w)
+plt.show()
