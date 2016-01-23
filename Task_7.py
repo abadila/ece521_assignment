@@ -11,17 +11,17 @@ lamda_shape = np.shape(lamda)
 train_x_shape = np.shape(train_x)
 T = train_x_shape[0]
 L = lamda_shape[0]
+N = train_x_shape[1]
 eta = 0.01
-E = np.zeros((L, 1))
-E_final = np.zeros((L, 2))
-for i in range(0, L):
+error = np.zeros((L, 2))
+#N = w_shape[0] 
+#M = eval_shape[0]  
+for i in range(0, L): 
     w = reg_gradient_descent(train_x, train_t, eta, lamda[i])
-    w_shape = np.shape(w)
-    N = w_shape[0]  
-    #print np.shape(np.transpose(w))
-    #print np.shape(train_x)
-    #for j in range(0, T):         
-    #E[i, 1] = 1 / (2 * T) * (np.dot(np.transpose(w),train_x[i, :]) + w[0] - train_t[i]) ^ 2 + lamda[i] / 2 * np.dot(np.transpose(w), w)
-    #E_final[i, 1] = lamda[i]
-    #E_final[i, 2] = E[i]
-#print E_final
+    error[i, 0] = lamda[i]
+    for j in range(1, N):  
+        for k in range(0, T): 
+            w_shape = np.shape(w)
+            M = w_shape[0]    
+            error[i, 1] = error[i, 1] + (np.dot(w[1:M], x_eval[j]) + w[0] - t_eval[j]) ** 2 
+print error
