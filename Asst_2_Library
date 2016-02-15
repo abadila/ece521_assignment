@@ -1,0 +1,51 @@
+import numpy as np
+
+def Softmax_Regression(x, y, theta, deltap, m, lbda, Y, N, NUM_IT):
+    xd = np.shape(x)
+    d = xd[1]
+    Yd = np.shape(Y)
+    C = Yd[0]
+    deltac = np.zeros(( d, C))
+    for k in range(0, NUM_IT):
+        nSamples = 500
+        Samples = np.random.randint(0, N, nSamples)
+        for j in range(0, d):
+            for i in range(0, C):
+                deltac[j,i] = 0
+                for n in Samples:
+                    S = 0
+                    for c in range(0, C):
+                        S = S + np.exp(np.dot(np.transpose(theta[:,c]),x[n,:]))
+                    p = np.exp(np.dot(np.transpose(theta[:,i]),x[n,:]))/S
+                    deltac[j,i] = -( p * x[n,j])
+                    if y[n] == Y[i]:
+                        deltac[j,i] = deltac[j,i] + x[n,j]
+        delta = np.add(deltac, np.multiply(m,deltap))
+        theta = np.add(theta, np.multiply(lbda,delta))
+    return [theta, delta]
+    
+def h(x, theta, Y):
+    thetad = np.shape(theta)
+    C = thetad[1]
+    H = np.zeros(C)
+    S = 0
+    for c in range(0, C):
+        S = S + np.exp(np.dot(np.transpose(theta[:,c]),x))
+    for i in range(0, C):
+        H[i] = np.exp(np.dot(np.transpose(theta[:,i]),x))/S
+    ypindex = np.argmax(H)
+    yp = Y[ypindex]
+    return yp
+    
+def lf(x, y, theta, C):
+    xd = np.shape(x)
+    N = xd[0]
+    lv = 0.
+    for n in range(0,N):
+        S = 0
+        for c in range(0, C):
+            S = S + np.exp(np.dot(np.transpose(theta[:,c]),x[n,:]))
+        lv = lv - np.log(S)
+        j = y[n]
+        lv = lv + np.dot(np.transpose(theta[:,j]),x[n,:])
+    return lv
