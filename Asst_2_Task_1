@@ -1,0 +1,71 @@
+import numpy as np
+from Library import Softmax_Regression
+from Library import h
+from Library import lf
+
+with np.load("notMNIST.npz") as data:
+    imageso, labels = data["images"], data["labels"]
+
+    shrink = 4
+
+    imagesod = np.shape(imageso)
+    no = imagesod[0]
+    N = imagesod[2]
+
+    images = np.zeros(( no/shrink, no/shrink, N))
+    for ni in range (0,N):
+        for i in range (0, no/shrink):
+            for j in range (0, no/shrink):
+                pixel = 0
+                for k in range (0, shrink):
+                    for l in range (0, shrink):
+                        pixel = pixel + imageso[i*shrink+k,j*shrink+l,ni]
+                pixel = int(round(pixel/(shrink*shrink)))
+                images[i,j,ni] = pixel
+
+    imagesd = np.shape(images)
+    n = imagesd[0]
+    d = np.power(n,2)
+    x = np.zeros(( N, d))
+    Ntr = 15000
+    Nval = 1000
+    for i in range (0,N):
+        j=0
+        for k in range (0,n):
+            for l in range (0,n):
+                x[i,j] = float(images[k,l,i])/255.
+                j=j+1
+    Y = [0,1,2,3,4,5,6,7,8,9]
+    Yd =np.shape(Y)
+    C = Yd[0]
+    epochs = [500, 1200, 1300, 1400]
+    epochsd = np.shape(epochs)
+    ne = epochsd[0]
+    le = np.zeros(( 2, ne))
+    NrErr = np.zeros(( 2, ne))
+    m = 0
+    lbda = 0.1
+    theta = np.random.rand( d, C)
+    delta = np.zeros(( d, C))
+    NUM_ITi = 0
+    j = 0
+    nte = 0
+    for NUM_IT in epochs:
+        answer = Softmax_Regression(x, labels, theta, delta, m, lbda, Y, Ntr, NUM_IT-NUM_ITi)
+        theta = answer[0]
+        delta = answer[1]
+        NUM_ITi = NUM_IT
+        for i in range (0,Ntr):
+            yp = h(x[i,:], theta, Y)            
+            if (labels[i] != yp):
+                NrErr[0,j] = NrErr[0,j] + 1
+            le[0,j] = lf(x[0:Ntr,:], labels[0:Ntr], theta, C)
+        for i in range (Ntr, Ntr+Nval):
+            yp = h(x[i,:], theta, Y)
+            if (labels[i] != yp):
+                NrErr[1,j] = NrErr[1,j] + 1
+            le[1,j] = lf(x[Ntr:Ntr+Nval,:], labels[Ntr:Ntr+Nval], theta, C)
+        j = j + 1
+    print NrErr
+    print le
+    
