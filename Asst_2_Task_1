@@ -59,12 +59,12 @@ with np.load("notMNIST.npz") as data:
             yp = h(x[i,:], theta, Y)            
             if (labels[i] != yp):
                 NrErr[0,j] = NrErr[0,j] + 1
-            le[0,j] = lf(x[0:Ntr,:], labels[0:Ntr], theta, C)
+            #le[0,j] = lf(x[0:Ntr,:], labels[0:Ntr], theta, C)
         for i in range (Ntr, Ntr+Nval):
             yp = h(x[i,:], theta, Y)
             if (labels[i] != yp):
                 NrErr[1,j] = NrErr[1,j] + 1
-            le[1,j] = lf(x[Ntr:Ntr+Nval,:], labels[Ntr:Ntr+Nval], theta, C)
+            #le[1,j] = lf(x[Ntr:Ntr+Nval,:], labels[Ntr:Ntr+Nval], theta, C)
         j = j + 1
     print NrErr
     print le
